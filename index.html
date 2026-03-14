@@ -120,13 +120,6 @@
     .print-btn { background: #64748b; }
     .print-btn:hover { background: #475569; }
 
-    .output-title {
-      text-align: center;
-      font-weight: 700;
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-
     .bluebox {
       background: #dbe8f7;
       padding: 20px;
@@ -147,8 +140,7 @@
       .form-section,
       .button-row,
       h1,
-      .subtitle,
-      .output-title {
+      .subtitle {
         display: none !important;
       }
 
@@ -173,7 +165,6 @@
     <h1>Coaching Notes Generator</h1>
     <div class="subtitle">
       Type into the fields on the left. The formatted notes appear on the right and update automatically.
-      Then copy and paste them into Future Plans as plain text.
     </div>
 
     <div class="layout">
@@ -216,24 +207,16 @@
       </div>
 
       <div class="output-section">
-        <div class="output-title">
-          Copy and paste this blue part into your notes section in Future Plans.<br>
-          Right click + Copy, then click Paste as Plain Text into FP.
-        </div>
-
         <div class="bluebox" id="output">Your formatted notes will appear here.</div>
       </div>
     </div>
   </div>
 
   <script>
-    function cleanText(value) {
-      return value.trim();
-    }
-
-    function formatBlock(label, value) {
-      const cleaned = cleanText(value);
-      return `${label}:\n${cleaned}`;
+    function buildSection(title, value) {
+      const cleaned = value.trim();
+      if (cleaned === "") return "";
+      return `\n\n${title}:\n${cleaned}`;
     }
 
     function generate() {
@@ -247,29 +230,17 @@
       const next = document.getElementById("next").value.trim();
       const summary = document.getElementById("summary").value.trim();
 
-      const result =
-`Top 3 Careers:
+      let result = `Top 3 Careers:
 1. ${career1}
 2. ${career2}
-3. ${career3}
+3. ${career3}`;
 
-Phase:
-${phase}
-
-Note:
-${note}
-
-Interests, Clubs, Sports:
-${interests}
-
-Resources Shared:
-${resources}
-
-Next Step:
-${next}
-
-Goals and Coaching Summary:
-${summary}`;
+      result += buildSection("Phase", phase);
+      result += buildSection("Note", note);
+      result += buildSection("Interests, Clubs, Sports", interests);
+      result += buildSection("Resources Shared", resources);
+      result += buildSection("Next Step", next);
+      result += buildSection("Goals and Coaching Summary", summary);
 
       document.getElementById("output").innerText = result;
     }
@@ -279,7 +250,7 @@ ${summary}`;
 
       try {
         await navigator.clipboard.writeText(text);
-        alert("Notes copied! Paste into Future Plans as plain text.");
+        alert("Notes copied!");
       } catch (err) {
         alert("Copy failed. Please highlight the blue box and copy manually.");
       }
@@ -302,5 +273,4 @@ ${summary}`;
     generate();
   </script>
 </body>
-</html>
 </html>
