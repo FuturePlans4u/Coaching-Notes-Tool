@@ -1,118 +1,257 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Coaching Notes Tool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coaching Notes Generator</title>
+  <style>
+    * { box-sizing: border-box; }
 
-<style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      padding: 30px;
+      margin: 0;
+      color: #1f2937;
+    }
 
-body{
-font-family: Arial;
-background:#f4f6fb;
-padding:40px;
-}
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 0 12px rgba(0,0,0,.10);
+    }
 
-.container{
-max-width:1000px;
-margin:auto;
-background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
-}
+    h1 {
+      margin-top: 0;
+      color: #124734;
+    }
 
-h1{
-margin-top:0;
-}
+    .subtitle {
+      color: #475569;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
 
-textarea,input{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:14px;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: start;
+    }
 
-.bluebox{
-background:#cfe0f5;
-padding:20px;
-border-radius:10px;
-white-space:pre-wrap;
-margin-top:20px;
-}
+    @media (max-width: 950px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
 
-button{
-background:#2563eb;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-}
+    .form-section,
+    .output-section {
+      background: #f9fbff;
+      border: 1px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 20px;
+    }
 
-button:hover{
-background:#1d4ed8;
-}
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
 
-</style>
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 850px) {
+      .button-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    button {
+      border: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .generate-btn { background: #2563eb; }
+    .generate-btn:hover { background: #1d4ed8; }
+
+    .copy-btn { background: #0f766e; }
+    .copy-btn:hover { background: #115e59; }
+
+    .clear-btn { background: #dc2626; }
+    .clear-btn:hover { background: #b91c1c; }
+
+    .print-btn { background: #64748b; }
+    .print-btn:hover { background: #475569; }
+
+    .output-title {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .bluebox {
+      background: #dbe8f7;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      min-height: 650px;
+      border: 1px solid #bfd3ea;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .form-section,
+      .button-row,
+      h1,
+      .subtitle,
+      .output-title {
+        display: none !important;
+      }
+
+      .container,
+      .output-section {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+
+      .bluebox {
+        background: white;
+        border: none;
+        padding: 0;
+        min-height: auto;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1>Coaching Notes Generator</h1>
+    <div class="subtitle">
+      Type into the fields on the left. The formatted notes appear on the right and update automatically.
+      Then copy and paste them into Future Plans as plain text.
+    </div>
 
-<div class="container">
+    <div class="layout">
+      <div class="form-section">
+        <label for="career1">Top Career #1</label>
+        <input id="career1" oninput="generate()" />
 
-<h1>Coaching Notes Generator</h1>
+        <label for="career2">Top Career #2</label>
+        <input id="career2" oninput="generate()" />
 
-<label>Top 3 Careers</label>
-<input id="careers">
+        <label for="career3">Top Career #3</label>
+        <input id="career3" oninput="generate()" />
 
-<label>Phase (Discovery or Engagement)</label>
-<input id="phase">
+        <label for="phase">Phase (Discovery or Engagement)</label>
+        <input id="phase" oninput="generate()" />
 
-<label>Note (optional)</label>
-<textarea id="note"></textarea>
+        <label for="note">Note (Not required)</label>
+        <textarea id="note" oninput="generate()"></textarea>
 
-<label>Interests, Clubs, Sports</label>
-<textarea id="interests"></textarea>
+        <label for="interests">Interests, Clubs, Sports</label>
+        <textarea id="interests" oninput="generate()"></textarea>
+        <div class="small-note">Use Enter to separate items onto different lines.</div>
 
-<label>Resources Shared</label>
-<textarea id="resources"></textarea>
+        <label for="resources">Resources Shared</label>
+        <textarea id="resources" oninput="generate()"></textarea>
+        <div class="small-note">Use Enter to separate items onto different lines.</div>
 
-<label>Next Step</label>
-<textarea id="next"></textarea>
+        <label for="next">Next Step</label>
+        <textarea id="next" oninput="generate()"></textarea>
 
-<label>Goals and Coaching Summary</label>
-<textarea id="summary"></textarea>
+        <label for="summary">Goals and Coaching Summary</label>
+        <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
 
+        <div class="button-row">
+          <button class="generate-btn" onclick="generate()">Generate Notes</button>
+          <button class="copy-btn" onclick="copyText()">Copy Notes</button>
+          <button class="clear-btn" onclick="clearForm()">Clear Form</button>
+          <button class="print-btn" onclick="window.print()">Print</button>
+        </div>
+      </div>
 
-<button onclick="generate()">Generate Notes</button>
+      <div class="output-section">
+        <div class="output-title">
+          Copy and paste this blue part into your notes section in Future Plans.<br>
+          Right click + Copy, then click Paste as Plain Text into FP.
+        </div>
 
-<button onclick="copyText()">Copy Notes</button>
+        <div class="bluebox" id="output">Your formatted notes will appear here.</div>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    function cleanText(value) {
+      return value.trim();
+    }
 
-<div class="bluebox" id="output">
-Your formatted notes will appear here.
-</div>
+    function formatBlock(label, value) {
+      const cleaned = cleanText(value);
+      return `${label}:\n${cleaned}`;
+    }
 
-</div>
+    function generate() {
+      const career1 = document.getElementById("career1").value.trim();
+      const career2 = document.getElementById("career2").value.trim();
+      const career3 = document.getElementById("career3").value.trim();
+      const phase = document.getElementById("phase").value.trim();
+      const note = document.getElementById("note").value.trim();
+      const interests = document.getElementById("interests").value.trim();
+      const resources = document.getElementById("resources").value.trim();
+      const next = document.getElementById("next").value.trim();
+      const summary = document.getElementById("summary").value.trim();
 
-<script>
-
-function generate(){
-
-let careers=document.getElementById("careers").value
-let phase=document.getElementById("phase").value
-let note=document.getElementById("note").value
-let interests=document.getElementById("interests").value
-let resources=document.getElementById("resources").value
-let next=document.getElementById("next").value
-let summary=document.getElementById("summary").value
-
-let result=
+      const result =
 `Top 3 Careers:
-${careers}
+1. ${career1}
+2. ${career2}
+3. ${career3}
 
 Phase:
 ${phase}
@@ -130,23 +269,38 @@ Next Step:
 ${next}
 
 Goals and Coaching Summary:
-${summary}`
+${summary}`;
 
-document.getElementById("output").innerText=result
+      document.getElementById("output").innerText = result;
+    }
 
-}
+    async function copyText() {
+      const text = document.getElementById("output").innerText;
 
-function copyText(){
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Notes copied! Paste into Future Plans as plain text.");
+      } catch (err) {
+        alert("Copy failed. Please highlight the blue box and copy manually.");
+      }
+    }
 
-let text=document.getElementById("output").innerText
+    function clearForm() {
+      const ids = [
+        "career1", "career2", "career3",
+        "phase", "note", "interests",
+        "resources", "next", "summary"
+      ];
 
-navigator.clipboard.writeText(text)
+      ids.forEach(id => {
+        document.getElementById(id).value = "";
+      });
 
-alert("Notes copied! Paste into Future Plans.")
+      generate();
+    }
 
-}
-
-</script>
-
+    generate();
+  </script>
 </body>
+</html>
 </html>
