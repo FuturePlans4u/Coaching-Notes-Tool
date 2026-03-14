@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Coaching Notes Tool</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f6fb;
+padding:40px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+margin-top:0;
+}
+
+textarea,input{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:14px;
+}
+
+.bluebox{
+background:#cfe0f5;
+padding:20px;
+border-radius:10px;
+white-space:pre-wrap;
+margin-top:20px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Coaching Notes Generator</h1>
+
+<label>Top 3 Careers</label>
+<input id="careers">
+
+<label>Phase (Discovery or Engagement)</label>
+<input id="phase">
+
+<label>Note (optional)</label>
+<textarea id="note"></textarea>
+
+<label>Interests, Clubs, Sports</label>
+<textarea id="interests"></textarea>
+
+<label>Resources Shared</label>
+<textarea id="resources"></textarea>
+
+<label>Next Step</label>
+<textarea id="next"></textarea>
+
+<label>Goals and Coaching Summary</label>
+<textarea id="summary"></textarea>
+
+
+<button onclick="generate()">Generate Notes</button>
+
+<button onclick="copyText()">Copy Notes</button>
+
+
+<div class="bluebox" id="output">
+Your formatted notes will appear here.
+</div>
+
+</div>
+
+<script>
+
+function generate(){
+
+let careers=document.getElementById("careers").value
+let phase=document.getElementById("phase").value
+let note=document.getElementById("note").value
+let interests=document.getElementById("interests").value
+let resources=document.getElementById("resources").value
+let next=document.getElementById("next").value
+let summary=document.getElementById("summary").value
+
+let result=
+`Top 3 Careers:
+${careers}
+
+Phase:
+${phase}
+
+Note:
+${note}
+
+Interests, Clubs, Sports:
+${interests}
+
+Resources Shared:
+${resources}
+
+Next Step:
+${next}
+
+Goals and Coaching Summary:
+${summary}`
+
+document.getElementById("output").innerText=result
+
+}
+
+function copyText(){
+
+let text=document.getElementById("output").innerText
+
+navigator.clipboard.writeText(text)
+
+alert("Notes copied! Paste into Future Plans.")
+
+}
+
+</script>
+
+</body>
+</html>
