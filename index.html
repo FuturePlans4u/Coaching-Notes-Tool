@@ -181,9 +181,6 @@
         <label for="phase">Phase (Discovery or Engagement)</label>
         <input id="phase" oninput="generate()" />
 
-        <label for="note">Note (Not required)</label>
-        <textarea id="note" oninput="generate()"></textarea>
-
         <label for="interests">Interests, Clubs, Sports</label>
         <textarea id="interests" oninput="generate()"></textarea>
         <div class="small-note">Use Enter to separate items onto different lines.</div>
@@ -224,7 +221,6 @@
       const career2 = document.getElementById("career2").value.trim();
       const career3 = document.getElementById("career3").value.trim();
       const phase = document.getElementById("phase").value.trim();
-      const note = document.getElementById("note").value.trim();
       const interests = document.getElementById("interests").value.trim();
       const resources = document.getElementById("resources").value.trim();
       const next = document.getElementById("next").value.trim();
@@ -236,7 +232,6 @@
 3. ${career3}`;
 
       result += buildSection("Phase", phase);
-      result += buildSection("Note", note);
       result += buildSection("Interests, Clubs, Sports", interests);
       result += buildSection("Resources Shared", resources);
       result += buildSection("Next Step", next);
@@ -259,7 +254,7 @@
     function clearForm() {
       const ids = [
         "career1", "career2", "career3",
-        "phase", "note", "interests",
+        "phase", "interests",
         "resources", "next", "summary"
       ];
 
