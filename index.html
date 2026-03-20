@@ -131,6 +131,12 @@
       font-size: 15px;
     }
 
+    .site-logo {
+      display: block;
+      margin: 20px auto;
+      max-width: 420px;
+    }
+
     @media print {
       body {
         background: white;
@@ -158,24 +164,11 @@
         min-height: auto;
       }
     }
-  <style>
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-
-  .site-logo {
-    display: block;
-    margin: 20px auto;
-    max-width: 420px;
-  }
-
-</style>
+  </style>
 </head>
 <body>
-  <img src="logo.png" class="site-logo">
+  <img src="logo.png" class="site-logo" alt="Logo">
+
   <div class="container">
     <h1>Coaching Notes Generator</h1>
     <div class="subtitle">
@@ -196,6 +189,9 @@
 
         <label for="phase">Phase (Discovery or Engagement + explanations)</label>
         <input id="phase" oninput="generate()" />
+
+        <label for="holland">Holland Codes</label>
+        <input id="holland" oninput="generate()" />
 
         <label for="interests">Interests, Clubs, Sports</label>
         <textarea id="interests" oninput="generate()"></textarea>
@@ -237,6 +233,7 @@
       const career2 = document.getElementById("career2").value.trim();
       const career3 = document.getElementById("career3").value.trim();
       const phase = document.getElementById("phase").value.trim();
+      const holland = document.getElementById("holland").value.trim();
       const interests = document.getElementById("interests").value.trim();
       const resources = document.getElementById("resources").value.trim();
       const next = document.getElementById("next").value.trim();
@@ -248,6 +245,7 @@
 3. ${career3}`;
 
       result += buildSection("Phase", phase);
+      result += buildSection("Holland Codes", holland);
       result += buildSection("Interests, Clubs, Sports", interests);
       result += buildSection("Resources Shared", resources);
       result += buildSection("Next Step", next);
@@ -270,7 +268,7 @@
     function clearForm() {
       const ids = [
         "career1", "career2", "career3",
-        "phase", "interests",
+        "phase", "holland", "interests",
         "resources", "next", "summary"
       ];
 
