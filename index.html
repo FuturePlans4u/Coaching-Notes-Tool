@@ -86,8 +86,8 @@
     }
 
     .button-row {
-  grid-template-columns: repeat(3, 1fr);
-}
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-top: 18px;
     }
@@ -107,9 +107,6 @@
       cursor: pointer;
       font-size: 14px;
     }
-
-    .generate-btn { background: #2563eb; }
-    .generate-btn:hover { background: #1d4ed8; }
 
     .copy-btn { background: #0f766e; }
     .copy-btn:hover { background: #115e59; }
@@ -135,6 +132,52 @@
       display: block;
       margin: 20px auto;
       max-width: 420px;
+    }
+
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .phase-btn {
+      background: #ffffff;
+      color: #1f2937;
+      border: 2px solid #94a3b8;
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      text-align: center;
+    }
+
+    .phase-btn:hover {
+      background: #e0f2fe;
+      border-color: #3b82f6;
+    }
+
+    .phase-btn.selected {
+      background: #2563eb;
+      color: white;
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .phase-description {
+      margin-top: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #dbe7ff;
+      border-radius: 8px;
+      color: #334155;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .phase-description strong {
+      color: #1e3a8a;
     }
 
     .holland-header {
@@ -222,6 +265,10 @@
       .holland-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .phase-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media print {
@@ -274,8 +321,18 @@
         <label for="career3">Top Career #3</label>
         <input id="career3" oninput="generate()" />
 
-        <label for="phase">Phase (Discovery or Engagement + explanations)</label>
-        <input id="phase" oninput="generate()" />
+        <label>Phase</label>
+        <div class="phase-grid">
+          <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">Discovery</button>
+          <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">Engagement</button>
+        </div>
+
+        <div class="phase-description">
+          <strong>Discovery:</strong> The individual is still exploring potential career interests and identifying what they would like to pursue.<br><br>
+          <strong>Engagement:</strong> The individual is seeking opportunities to engage, gain exposure, and learn more about career options.
+        </div>
+
+        <input id="phase" type="hidden" />
 
         <div class="holland-header">
           <label>Top 3 Holland Codes</label>
@@ -347,10 +404,10 @@
         <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
 
         <div class="button-row">
-  <button type="button" class="copy-btn" onclick="copyText()">Copy Notes</button>
-  <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
-  <button type="button" class="print-btn" onclick="window.print()">Print</button>
-</div>
+          <button type="button" class="copy-btn" onclick="copyText()">Copy Notes</button>
+          <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+          <button type="button" class="print-btn" onclick="window.print()">Print</button>
+        </div>
       </div>
 
       <div class="output-section">
@@ -361,11 +418,34 @@
 
   <script>
     let hollandSelectionOrder = [];
+    let selectedPhase = "";
 
     function buildSection(title, value) {
       const cleaned = value.trim();
       if (cleaned === "") return "";
       return `\n\n${title}:\n${cleaned}`;
+    }
+
+    function selectPhase(button) {
+      const phase = button.dataset.phase;
+      const hiddenPhase = document.getElementById("phase");
+
+      if (selectedPhase === phase) {
+        selectedPhase = "";
+        hiddenPhase.value = "";
+        button.classList.remove("selected");
+      } else {
+        selectedPhase = phase;
+        hiddenPhase.value = phase;
+
+        document.querySelectorAll(".phase-btn").forEach(btn => {
+          btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+      }
+
+      generate();
     }
 
     function getSelectedHollandCodes() {
@@ -424,10 +504,9 @@
       const career3 = document.getElementById("career3").value.trim();
       const phase = document.getElementById("phase").value.trim();
       const hollandArray = getSelectedHollandCodes();
-
-const holland = hollandArray.length
-  ? hollandArray.map((code, i) => `${i + 1}. ${code}`).join("\n")
-  : "";
+      const holland = hollandArray.length
+        ? hollandArray.map((code, i) => `${i + 1}. ${code}`).join("\n")
+        : "";
       const interests = document.getElementById("interests").value.trim();
       const resources = document.getElementById("resources").value.trim();
       const next = document.getElementById("next").value.trim();
@@ -471,6 +550,11 @@ const holland = hollandArray.length
       });
 
       hollandSelectionOrder = [];
+      selectedPhase = "";
+
+      document.querySelectorAll(".phase-btn").forEach(btn => {
+        btn.classList.remove("selected");
+      });
 
       document.querySelectorAll('input[name="holland"]').forEach(box => {
         box.checked = false;
