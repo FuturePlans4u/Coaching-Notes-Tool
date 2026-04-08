@@ -423,7 +423,11 @@
       const career2 = document.getElementById("career2").value.trim();
       const career3 = document.getElementById("career3").value.trim();
       const phase = document.getElementById("phase").value.trim();
-      const holland = getSelectedHollandCodes().join(", ");
+      const hollandArray = getSelectedHollandCodes();
+
+const holland = hollandArray.length
+  ? hollandArray.map((code, i) => `${i + 1}. ${code}`).join("\n")
+  : "";
       const interests = document.getElementById("interests").value.trim();
       const resources = document.getElementById("resources").value.trim();
       const next = document.getElementById("next").value.trim();
