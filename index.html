@@ -9,16 +9,60 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #f4f6fb;
+      background: linear-gradient(135deg, #f4f8ff 0%, #eef7f3 50%, #f9fbff 100%);
       padding: 30px;
       margin: 0;
       color: #1f2937;
     }
 
+    .page-shell {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1150px) 250px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .quote-sidebar {
+      position: sticky;
+      top: 20px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(191, 211, 234, 0.9);
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .quote-sidebar h3 {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      color: #124734;
+      text-align: center;
+    }
+
+    .quote-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quote-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border: 1px solid #dbe7ff;
+      border-left: 5px solid #7fb3ff;
+      border-radius: 12px;
+      padding: 14px 12px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
+
     .container {
-      max-width: 1150px;
-      margin: auto;
-      background: white;
+      width: 100%;
+      background: rgba(255,255,255,0.96);
       padding: 28px;
       border-radius: 14px;
       box-shadow: 0 0 12px rgba(0,0,0,.10);
@@ -40,6 +84,21 @@
       grid-template-columns: 1.1fr 0.9fr;
       gap: 28px;
       align-items: start;
+    }
+
+    @media (max-width: 1250px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-sidebar {
+        position: static;
+      }
+
+      .left-sidebar,
+      .right-sidebar {
+        display: none;
+      }
     }
 
     @media (max-width: 950px) {
@@ -277,18 +336,22 @@
         padding: 0;
       }
 
+      .quote-sidebar,
       .form-section,
       .button-row,
       h1,
-      .subtitle {
+      .subtitle,
+      .site-logo {
         display: none !important;
       }
 
+      .page-shell,
       .container,
       .output-section {
         box-shadow: none;
         border: none;
         padding: 0;
+        display: block;
       }
 
       .bluebox {
@@ -301,124 +364,272 @@
   </style>
 </head>
 <body>
-  <img src="logo.png" class="site-logo" alt="Logo">
+  <div class="page-shell">
+    <aside class="quote-sidebar left-sidebar">
+      <h3>Positive Quotes</h3>
+      <div class="quote-list" id="leftQuotes"></div>
+    </aside>
 
-  <div class="container">
-    <h1>Coaching Notes Generator</h1>
-    <div class="subtitle">
-      Type into the fields on the left. The formatted notes appear on the right and update automatically.
-      Avoid using participant last names for client privacy and data protection.
-    </div>
+    <main>
+      <img src="logo.png" class="site-logo" alt="Logo">
 
-    <div class="layout">
-      <div class="form-section">
-        <label for="career1">Top Career #1</label>
-        <input id="career1" oninput="generate()" />
-
-        <label for="career2">Top Career #2</label>
-        <input id="career2" oninput="generate()" />
-
-        <label for="career3">Top Career #3</label>
-        <input id="career3" oninput="generate()" />
-
-        <label>Phase</label>
-        <div class="phase-grid">
-          <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">Discovery</button>
-          <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">Engagement</button>
+      <div class="container">
+        <h1>Coaching Notes Generator</h1>
+        <div class="subtitle">
+          Type into the fields on the left. The formatted notes appear on the right and update automatically.
+          Avoid using participant last names for client privacy and data protection.
         </div>
 
-        <div class="phase-description">
-          <strong>Discovery:</strong> The individual is still exploring potential career interests and identifying what they would like to pursue.<br><br>
-          <strong>Engagement:</strong> The individual is seeking opportunities to engage, gain exposure, and learn more about career options.
-        </div>
+        <div class="layout">
+          <div class="form-section">
+            <label for="career1">Top Career #1</label>
+            <input id="career1" oninput="generate()" />
 
-        <input id="phase" type="hidden" />
+            <label for="career2">Top Career #2</label>
+            <input id="career2" oninput="generate()" />
 
-        <div class="holland-header">
-          <label>Top 3 Holland Codes</label>
-          <div id="hollandCounter" class="holland-counter">0 of 3 selected</div>
-        </div>
+            <label for="career3">Top Career #3</label>
+            <input id="career3" oninput="generate()" />
 
-        <div class="holland-grid">
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Realistic">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Realistic</span>
-            </span>
-          </label>
+            <label>Phase</label>
+            <div class="phase-grid">
+              <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">Discovery</button>
+              <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">Engagement</button>
+            </div>
 
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Investigative">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Investigative</span>
-            </span>
-          </label>
+            <div class="phase-description">
+              <strong>Discovery:</strong> The individual is still exploring potential career interests and identifying what they would like to pursue.<br><br>
+              <strong>Engagement:</strong> The individual is seeking opportunities to engage, gain exposure, and learn more about career options.
+            </div>
 
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Artistic">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Artistic</span>
-            </span>
-          </label>
+            <input id="phase" type="hidden" />
 
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Social">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Social</span>
-            </span>
-          </label>
+            <div class="holland-header">
+              <label>Top 3 Holland Codes</label>
+              <div id="hollandCounter" class="holland-counter">0 of 3 selected</div>
+            </div>
 
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Enterprising">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Enterprising</span>
-            </span>
-          </label>
+            <div class="holland-grid">
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Realistic">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Realistic</span>
+                </span>
+              </label>
 
-          <label class="holland-option">
-            <input type="checkbox" name="holland" value="Conventional">
-            <span class="holland-pill">
-              <span class="holland-rank"></span>
-              <span class="holland-text">Conventional</span>
-            </span>
-          </label>
-        </div>
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Investigative">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Investigative</span>
+                </span>
+              </label>
 
-        <label for="interests">Interests, Clubs, Sports</label>
-        <textarea id="interests" oninput="generate()"></textarea>
-        <div class="small-note">Use Enter to separate items onto different lines.</div>
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Artistic">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Artistic</span>
+                </span>
+              </label>
 
-        <label for="resources">Resources Shared</label>
-        <textarea id="resources" oninput="generate()"></textarea>
-        <div class="small-note">Use Enter to separate items onto different lines.</div>
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Social">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Social</span>
+                </span>
+              </label>
 
-        <label for="next">Next Step</label>
-        <textarea id="next" oninput="generate()"></textarea>
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Enterprising">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Enterprising</span>
+                </span>
+              </label>
 
-        <label for="summary">Goals and Coaching Summary - Avoid using participant last names for client privacy and data protection.</label>
-        <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
+              <label class="holland-option">
+                <input type="checkbox" name="holland" value="Conventional">
+                <span class="holland-pill">
+                  <span class="holland-rank"></span>
+                  <span class="holland-text">Conventional</span>
+                </span>
+              </label>
+            </div>
 
-        <div class="button-row">
-          <button type="button" class="copy-btn" onclick="copyText()">Copy Notes</button>
-          <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
-          <button type="button" class="print-btn" onclick="window.print()">Print</button>
+            <label for="interests">Interests, Clubs, Sports</label>
+            <textarea id="interests" oninput="generate()"></textarea>
+            <div class="small-note">Use Enter to separate items onto different lines.</div>
+
+            <label for="resources">Resources Shared</label>
+            <textarea id="resources" oninput="generate()"></textarea>
+            <div class="small-note">Use Enter to separate items onto different lines.</div>
+
+            <label for="next">Next Step</label>
+            <textarea id="next" oninput="generate()"></textarea>
+
+            <label for="summary">Goals and Coaching Summary - Avoid using participant last names for client privacy and data protection.</label>
+            <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
+
+            <div class="button-row">
+              <button type="button" class="copy-btn" onclick="copyText()">Copy Notes</button>
+              <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+              <button type="button" class="print-btn" onclick="window.print()">Print</button>
+            </div>
+          </div>
+
+          <div class="output-section">
+            <div class="bluebox" id="output">Your formatted notes will appear here.</div>
+          </div>
         </div>
       </div>
+    </main>
 
-      <div class="output-section">
-        <div class="bluebox" id="output">Your formatted notes will appear here.</div>
-      </div>
-    </div>
+    <aside class="quote-sidebar right-sidebar">
+      <h3>Encouragement</h3>
+      <div class="quote-list" id="rightQuotes"></div>
+    </aside>
   </div>
 
   <script>
     let hollandSelectionOrder = [];
     let selectedPhase = "";
+
+    const quotes = [
+      "A coaching conversation can change a life.",
+      "A coach can help turn uncertainty into direction.",
+      "A coaching moment today can build confidence tomorrow.",
+      "A coach helps people see what they already carry inside.",
+      "A good coach listens for what matters most.",
+      "A good question can open a new path.",
+      "A grateful heart notices progress.",
+      "A great coach does not just inform. They inspire.",
+      "A great conversation can plant the seed for change.",
+      "A journey starts with a single step.",
+      "A life coach helps turn goals into action.",
+      "A life of growth is built choice by choice.",
+      "All coaching starts with connection.",
+      "A mentor can guide, but the person must still choose.",
+      "A mentor helps people believe they can move forward.",
+      "A mentor matters.",
+      "A positive word can carry more weight than you think.",
+      "As coaches, we help people see possibilities.",
+      "As coaches, we are often the calm in the confusion.",
+      "At times, progress feels slow. It still counts.",
+      "Bad coaching talks at people. Good coaching talks with them.",
+      "Chains can break when people believe change is possible.",
+      "Change can start with one conversation.",
+      "Character grows through choices.",
+      "Choosing hope is still a choice.",
+      "Coaches help people organize their thoughts.",
+      "Coaching creates clarity.",
+      "Coaching helps turn ideas into plans.",
+      "Coaching is not about having all the answers.",
+      "Coaching is often about asking better questions.",
+      "Coaching is part support and part strategy.",
+      "Coaching opens doors people may not see on their own.",
+      "Coaching should leave people feeling stronger, not smaller.",
+      "Coaching with patience matters.",
+      "Deep listening is powerful.",
+      "Does coaching always fix everything? No. But it can move things forward.",
+      "Don’t assume someone knows their own strengths yet.",
+      "Each person has value.",
+      "Everyone needs encouragement sometimes.",
+      "Every life has possibility.",
+      "Examine the obstacle, but do not worship it.",
+      "Executive function can improve with practice and support.",
+      "Failing to try guarantees nothing changes.",
+      "Failure is information, not identity.",
+      "Feedback can be a gift when given well.",
+      "Good coaches stay curious.",
+      "Great coaching mixes honesty with support.",
+      "Growth is not always loud.",
+      "Have an open mind and a steady voice.",
+      "I absolutely believe people can grow.",
+      "I believe in progress more than perfection.",
+      "If it helps someone move forward, it matters.",
+      "If you want change, start small and start now.",
+      "I have one rule: do not quit on yourself.",
+      "I learned that courage often looks quiet.",
+      "I’ll bet on effort every time.",
+      "In a coaching conversation, trust matters.",
+      "In growth, messy is normal.",
+      "I never underestimate the power of being heard.",
+      "Insight is useful only when action follows.",
+      "It doesn’t have to be perfect to be helpful.",
+      "Just doing the next right thing counts.",
+      "Life coaching is about movement, not magic.",
+      "Life coaching should feel practical and hopeful.",
+      "Life is complicated. Coaching can help simplify the next step.",
+      "Life is growth, setbacks, and trying again.",
+      "Mentoring can change the direction of a life.",
+      "My best investment is still in people.",
+      "Once a mind opens, it is hard to close it back up.",
+      "One step done beats ten steps imagined.",
+      "One of the best gifts is helping someone see their own ability.",
+      "Our presence matters more than we realize.",
+      "People have more strength than they think.",
+      "People need support, not just instructions.",
+      "Perfection is a ridiculous standard anyway.",
+      "Probably the best thing we can offer is belief.",
+      "Rituals and routines can create stability.",
+      "See people for their potential, not just their struggle.",
+      "Self-development is built in daily choices.",
+      "Telling a person they matter can matter.",
+      "Simply pausing to think can change an outcome.",
+      "Spring is proof that new growth happens.",
+      "Strength grows with use.",
+      "That’s the thing about change — it usually starts awkwardly.",
+      "The art of coaching is part empathy, part structure.",
+      "The best coaches help people hear themselves clearly.",
+      "The best path forward is often the next one.",
+      "The challenge is real, but so is the ability to respond.",
+      "The discipline to continue matters.",
+      "The goal is progress, not performance theater.",
+      "The good in people is worth looking for.",
+      "The interesting thing about growth is that it keeps asking for courage.",
+      "The mind can learn new patterns.",
+      "The most important step may be the one taken today.",
+      "The only way through some things is through them.",
+      "The point is not to know everything. It is to keep learning.",
+      "There is power in small wins.",
+      "The role of a coach is to guide, not control.",
+      "The test of growth is what happens next.",
+      "To create change, repeat what works.",
+      "To have impact, show up consistently.",
+      "Transformation usually looks ordinary while it is happening.",
+      "Treat a person like they matter, because they do.",
+      "Ultimate growth does not happen by accident.",
+      "Understanding opens doors.",
+      "Unless you quit, the story is not over.",
+      "What do you want your next step to be?",
+      "We all need support sometimes.",
+      "We have more influence than we think.",
+      "What matters is not just the plan, but the follow-through.",
+      "When you encourage someone, it can echo for years.",
+      "When you help people think clearly, they act more confidently.",
+      "When you listen well, people often find their own answers.",
+      "Who we are becoming matters.",
+      "Winning is nice. Growth is better.",
+      "Without reflection, change is harder.",
+      "With the right support, people can surprise themselves.",
+      "You are capable of more than fear suggests.",
+      "You can build confidence through action.",
+      "You can start over without starting from zero.",
+      "You don’t need all the answers to take the next step.",
+      "You seek growth every time you try again.",
+      "You get stronger by using your strength.",
+      "Change is possible, even when it feels late.",
+      "Change takes effort, but so does staying stuck.",
+      "Character shows up in daily choices.",
+      "Charisma is overrated. Consistency wins.",
+      "Don’t confuse a rough season with a dead end.",
+      "Don’t tell people to dream bigger if you won’t help them plan better.",
+      "Don’t wait for perfect conditions.",
+      "The price of growth is discomfort. Still worth it."
+    ];
 
     function buildSection(title, value) {
       const cleaned = value.trim();
@@ -563,6 +774,33 @@
 
       updateHolland();
       generate();
+      refreshQuotes();
+    }
+
+    function getRandomUniqueQuotes(count, excludeQuotes = []) {
+      const availableQuotes = quotes.filter(q => !excludeQuotes.includes(q));
+      const shuffled = [...availableQuotes].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, count);
+    }
+
+    function renderQuotes() {
+      const leftCount = Math.random() < 0.5 ? 1 : 2;
+      const rightCount = Math.random() < 0.5 ? 1 : 2;
+
+      const leftSelected = getRandomUniqueQuotes(leftCount);
+      const rightSelected = getRandomUniqueQuotes(rightCount, leftSelected);
+
+      document.getElementById("leftQuotes").innerHTML = leftSelected
+        .map(quote => `<div class="quote-card">“${quote}”</div>`)
+        .join("");
+
+      document.getElementById("rightQuotes").innerHTML = rightSelected
+        .map(quote => `<div class="quote-card">“${quote}”</div>`)
+        .join("");
+    }
+
+    function refreshQuotes() {
+      renderQuotes();
     }
 
     document.querySelectorAll('input[name="holland"]').forEach(box => {
@@ -571,6 +809,7 @@
 
     updateHolland();
     generate();
+    refreshQuotes();
   </script>
 </body>
 </html>
